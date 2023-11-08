@@ -2,7 +2,7 @@ import { SlashCommandBuilder, REST, Routes, Client, Events, GatewayIntentBits, C
 import "dotenv/config"
 import { green, reset, yellow } from "kleur"
 import mongoose from "mongoose";
-import { checkProfile, getProfile, getRandomInt } from "./utils/functions";
+import { checkProfile, getProfile, getRandomInt, getTopProfiles } from "./utils/functions";
 import Profile from "./models/Profile";
 
 const { Canvas, loadFont, loadImage } = require('canvas-constructor/cairo')
@@ -55,34 +55,56 @@ client.on(Events.InteractionCreate, async interaction => {
     let level = profile.level || 0
     let nextLevel = profile.expNeeded || 100
     let points = profile.exp || 0
+    let topProfiles = (await getTopProfiles())
+    let position = topProfiles.findIndex((p) => p.user == profile.user) + 1
     const progBar = Math.floor(Math.max((points / nextLevel) * 550, 10))
     let rankCardColor = '#ffc2dc'
     const canvas = new Canvas(600, 300)
-    await loadFont('./src/resources/fonts/Inter-ExtraBold.ttf', {
+    await loadFont('./src/resources/fonts/Georgia-Bold.ttf', {
       family: 'Default Bold'
     })
-    await loadFont('./src/resources/fonts/Inter-Medium.ttf', {
+    await loadFont('./src/resources/fonts/Georgia.ttf', {
       family: 'Default'
     })
-    const bg = await loadImage('https://cdn.discordapp.com/attachments/766726525520838670/1171663658472976414/wooper.jpg?ex=655d7fd0&is=654b0ad0&hm=779176f972eadce03f7fc50cd96155ee1a50b806c4bba514df679c8ca0128507&')
+    const bg = await loadImage('https://cdn.discordapp.com/attachments/678711114183344170/1171924717238767656/ghost_bg2.png?ex=655e72f1&is=654bfdf1&hm=d9c49e4aa646d58a69a9fb14520fa6eb92abf65ab4c0061b1a6789328bd713fc&')
     const avatar = await loadImage(avatarURL)
-    canvas
-      .printImage(bg, 0, 0, 600, 300)
-      .setShadowColor('#44474d')
-      .setShadowBlur(10)
-      .setShadowOffsetY(5)
-      .printCircle(80, 90, 48)
-      .restore()
-      .printCircularImage(avatar, 80, 90, 48)
-      .setColor('#ffff')
     
     if (user.discriminator == '0') {
-      canvas
-        .setTextFont('48pt Default')
-        .printText(user.username, 140, 110)
-        .setTextFont('18pt Default Bold')
-        .setColor('#cfd1d0')
-        .setColor('#ffff')
+      if (user.username.length > 10) {
+        canvas
+          .printImage(bg, 0, 0, 600, 300)
+          .setShadowColor('#db4664')
+          .setShadowBlur(15)
+          .setShadowOffsetY(5)
+          .printCircle(60, 90, 48)
+          .restore() 
+          .printCircularImage(avatar, 60, 90, 48)
+          .setColor('#ffff')
+          .setTextFont('24pt Default Bold')
+          .printText(user.username, 115, 105)
+          .setTextFont('18pt Default Bold')
+          .setColor('#cfd1d0')
+          .setColor('#ffff')
+          .setTextFont('32pt Default Bold')
+          .printText(`#${position}`, 510, 110)
+      } else {
+        canvas
+          .printImage(bg, 0, 0, 600, 300)
+          .setShadowColor('#db4664')
+          .setShadowBlur(15)
+          .setShadowOffsetY(5)
+          .printCircle(80, 90, 48)
+          .restore() 
+          .printCircularImage(avatar, 80, 90, 48)
+          .setColor('#ffff')
+          .setTextFont('36pt Default Bold')
+          .printText(user.username, 140, 105)
+          .setTextFont('18pt Default Bold')
+          .setColor('#cfd1d0')
+          .setColor('#ffff')
+          .setTextFont('48pt Default Bold')
+          .printText(`#${position}`, 485, 110)
+      }
     } else {
       canvas
         .setTextFont('36pt Default')
@@ -97,12 +119,16 @@ client.on(Events.InteractionCreate, async interaction => {
       .setTextFont('24pt Default Bold')
       .setStroke('#fff')
       .setTextFont('25pt Default Bold')
+      .resetShadows()
+      .setShadowColor('#db4664')
+      .setShadowBlur(15)
+      .setShadowOffsetY(5) 
       .printText(`Level ${level}`, 35, 216)
       .printText(`${points} / ${nextLevel}`, 420, 216)
       .resetShadows()
       .printRoundedRectangle(25, 230, 550, 24, 32)
       .restore() 
-      .setColor(rankCardColor)
+      .setColor('#db4664')
       .printRoundedRectangle(31, 234, progBar, 16, 20)
       .clip()
     await interaction.reply({ files: [{ attachment: canvas.toBuffer(), name: 'card.png' }] })

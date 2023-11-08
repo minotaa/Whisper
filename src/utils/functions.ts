@@ -7,6 +7,12 @@ export function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
+export const getTopProfiles = async function () {
+  let profiles = await Profile.find().exec()
+  profiles.sort(function (a, b) { return (b.totalExp) - (a.totalExp) })
+  return profiles
+}
+
 export const checkProfile = async function (user, bot = null) {
   let profiles = await Profile.find({
     user: user
