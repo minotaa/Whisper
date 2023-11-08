@@ -1,9 +1,11 @@
-import { SlashCommandBuilder, REST, Routes, Client, Events, GatewayIntentBits, Collection, ActivityType, User } from "discord.js"
+import { SlashCommandBuilder, REST, Routes, Client, Events, GatewayIntentBits, Collection, ActivityType, User, TextChannel } from "discord.js"
 import "dotenv/config"
 import { green, reset, yellow } from "kleur"
 import mongoose from "mongoose";
 import { checkProfile, getProfile, getRandomInt, getTopProfiles } from "./utils/functions";
 import Profile from "./models/Profile";
+import moment from "moment";
+import { pickupLines, roles } from "./utils/constants";
 
 const { Canvas, loadFont, loadImage } = require('canvas-constructor/cairo')
 
@@ -38,7 +40,34 @@ client.on(Events.MessageCreate, async message => {
   if (profile.exp >= (100 * Math.pow(1.5, (profile.level + 1)))) {
     profile.exp -= (100 * Math.pow(1.5, (profile.level + 1)))
     profile.level++
-    message.channel.send(`Congratulations <@!${message.author.id}>! You've leveled up to **Level ${profile.level}**! :D\nHeadpats for you <:pi_headpats:1106417340977004664:> <:pi_headpats:1106417340977004664:> <:pi_headpats:1106417340977004664:>`)
+    message.channel.send(`Congratulations <@!${message.author.id}>! You've leveled up to **Level ${profile.level}**! :D\nHeadpats for you <:pi_headpats:1106417340977004664> <:pi_headpats:1106417340977004664> <:pi_headpats:1106417340977004664>`)
+  }
+  if (profile.level >= 1) {
+    message.member.roles.add(roles.LEVEL_1)
+  } else if (profile.level >= 5) {
+    message.member.roles.add(roles.LEVEL_5)
+  } else if (profile.level >= 10) {
+    message.member.roles.add(roles.LEVEL_10)
+  } else if (profile.level >= 20) {
+    message.member.roles.add(roles.LEVEL_20)
+  } else if (profile.level >= 25) {
+    message.member.roles.add(roles.LEVEL_25)
+  } else if (profile.level >= 35) {
+    message.member.roles.add(roles.LEVEL_35)
+  } else if (profile.level >= 45) {
+    message.member.roles.add(roles.LEVEL_45)
+  }else if (profile.level >= 50) {
+    message.member.roles.add(roles.LEVEL_50)
+  } else if (profile.level >= 65) {
+    message.member.roles.add(roles.LEVEL_65)
+  } else if (profile.level >= 70) {
+    message.member.roles.add(roles.LEVEL_70)
+  } else if (profile.level >= 75) {
+    message.member.roles.add(roles.LEVEL_75)
+  } else if (profile.level >= 90) {
+    message.member.roles.add(roles.LEVEL_90)
+  } else if (profile.level >= 100) {
+    message.member.roles.add(roles.LEVEL_100)
   }
 })
 
@@ -132,6 +161,14 @@ client.on(Events.InteractionCreate, async interaction => {
       .printRoundedRectangle(31, 234, progBar, 16, 20)
       .clip()
     await interaction.reply({ files: [{ attachment: canvas.toBuffer(), name: 'card.png' }] })
+  } else if (interaction.commandName.toLowerCase() == 'rizz') {
+    let line = pickupLines[Math.floor(Math.random() * pickupLines.length)]
+    if (interaction.options.getUser('rizzee')) {
+      let user = interaction.options.getUser('rizzee')
+      await interaction.reply({ content: `<:pi_draw:1107517014819487775> <@!${user.id}>, ${interaction.user.displayName} would like to rizz you up: ${line}` })
+    } else {
+      await interaction.reply({ content: `<:pi_draw:1107517014819487775> Pi told me this one works well: ${line}` })
+    }
   }
 })
 
@@ -146,13 +183,28 @@ client.once(Events.ClientReady, async c => {
           .setDescription('User to view leveling rank')
           .setRequired(false)  
       ).toJSON(),
+    new SlashCommandBuilder()
+      .setName('rizz')
+      .setDescription('Send a pickup line to your darling. pi made me add this command')
+      .addUserOption(user => 
+        user
+          .setName('rizzee')
+          .setDescription('User to send pickup line to.')
+          .setRequired(false)  
+      ).toJSON(),
   ]
   console.log(green("✓"), reset(`Ready! Successfully logged in as ${c.user.tag}!`));
-  c.user.setActivity('I\'m in your walls.', { type: ActivityType.Custom })
+  c.user.setActivity('bop bop bop', { type: ActivityType.Custom })
   console.log(yellow("..."), reset("Attempting to send slash commands to Discord..."));
+  setInterval(async () => {
+    let channelId = '1105291397701042218'
+    if (moment().utcOffset(-5).format("HH:mm") === '15:14') {
+      ((await client.channels.fetch(channelId)) as TextChannel).send('It\'s :pie: o\'clock!')
+    }
+  }, 15000)
   try {
     const data = await rest.put(
-			Routes.applicationGuildCommands('1171649028086317056', '766726525520838666'),
+			Routes.applicationGuildCommands('1171649028086317056', '1105284781106794507'),
 			{ body: commands },
 		); // @ts-ignore
     console.log(green("✓"), reset(`Successfully reloaded ${data.length} application (/) commands.`));
