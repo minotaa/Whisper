@@ -122,7 +122,7 @@ client.once(Events.ClientReady, async c => {
       ).toJSON(),
   ]
   console.log(green("✓"), reset(`Ready! Successfully logged in as ${c.user.tag}!`));
-  c.user.setActivity('twitch.tv/doodlesbypi', { type: ActivityType.Watching })
+  c.user.setActivity('I\'m in your walls.', { type: ActivityType.Custom })
   console.log(yellow("..."), reset("Attempting to send slash commands to Discord..."));
   try {
     const data = await rest.put(
