@@ -20,25 +20,25 @@ const expCooldowns = new Collection()
 client.on(Events.MessageCreate, async message => {
   if (message.author.bot) return
   if (message.webhookId) return
+  await checkProfile(message.author.id, client)
+  const profile = await Profile.findOne({
+    user: message.author.id
+  }).exec()
   if (!expCooldowns.has(message.author.id)) {
     const exp = getRandomInt(5, 15)
-    await checkProfile(message.author.id, client)
-    const profile = await Profile.findOne({
-      user: message.author.id
-    }).exec()
     profile.exp += exp
     profile.totalExp += exp
-    if (profile.exp >= (100 * Math.pow(1.5, (profile.level + 1)))) {
-      profile.exp -= (100 * Math.pow(1.5, (profile.level + 1)))
-      profile.level++
-      message.channel.send(`Congratulations <@!${message.author.id}>! You've leveled up to **Level ${profile.level}**! :D\nHeadpats for you <:pi_headpats:1106417340977004664:> <:pi_headpats:1106417340977004664:> <:pi_headpats:1106417340977004664:>`)
-    }
     profile.save()
 
     expCooldowns.set(message.author.id, new Collection())
     setTimeout(() => {
       expCooldowns.delete(message.author.id)
     }, 30000)
+  }
+  if (profile.exp >= (100 * Math.pow(1.5, (profile.level + 1)))) {
+    profile.exp -= (100 * Math.pow(1.5, (profile.level + 1)))
+    profile.level++
+    message.channel.send(`Congratulations <@!${message.author.id}>! You've leveled up to **Level ${profile.level}**! :D\nHeadpats for you <:pi_headpats:1106417340977004664:> <:pi_headpats:1106417340977004664:> <:pi_headpats:1106417340977004664:>`)
   }
 })
 
@@ -53,7 +53,7 @@ client.on(Events.InteractionCreate, async interaction => {
       return
     }
     let level = profile.level || 0
-    let nextLevel = profile.expNeeded || 100
+    let nextLevel = (100 * Math.pow(1.5, (profile.level + 1))) || 100
     let points = profile.exp || 0
     let topProfiles = (await getTopProfiles())
     let position = topProfiles.findIndex((p) => p.user == profile.user) + 1
@@ -66,7 +66,7 @@ client.on(Events.InteractionCreate, async interaction => {
     await loadFont('./src/resources/fonts/Georgia.ttf', {
       family: 'Default'
     })
-    const bg = await loadImage('https://cdn.discordapp.com/attachments/678711114183344170/1171924717238767656/ghost_bg2.png?ex=655e72f1&is=654bfdf1&hm=d9c49e4aa646d58a69a9fb14520fa6eb92abf65ab4c0061b1a6789328bd713fc&')
+    const bg = await loadImage('https://cdn.discordapp.com/attachments/678711114183344170/1171940081888673833/ghost_bg5.png?ex=655e8141&is=654c0c41&hm=6d930989dba32c15882d573f8ff1501a59aac516c69c4c92578f0e2f10aac5da&')
     const avatar = await loadImage(avatarURL)
     
     if (user.discriminator == '0') {
