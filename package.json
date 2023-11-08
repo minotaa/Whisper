@@ -1,0 +1,24 @@
+{
+  "name": "Whisper",
+  "version": "1.0.0",
+  "description": "Pi Community Bot",
+  "main": "dist/index.js",
+  "repository": "https://github.com/minotaa/Whisper",
+  "author": "Juan Pichardo <juanpichardo456@icloud.com>",
+  "license": "GPL-3.0",
+  "private": false,
+  "dependencies": {
+    "@aero/centra": "^1.0.8",
+    "@types/node": "^20.9.0",
+    "bufferutil": "^4.0.8",
+    "canvas": "^2.11.2",
+    "canvas-constructor": "^7.0.1",
+    "discord.js": "^14.13.0",
+    "dotenv": "^16.3.1",
+    "kleur": "^4.1.5",
+    "mongoose": "^8.0.0",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.2.2",
+    "utf-8-validate": "^6.0.3"
+  }
+}
