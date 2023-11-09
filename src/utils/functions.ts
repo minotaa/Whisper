@@ -17,16 +17,17 @@ export const checkProfile = async function (user, bot = null) {
   let profiles = await Profile.find({
     user: user
   }).exec()
-  if (!profiles[0]) {
-    let profile = new Profile({
+  if (profiles.length > 0) {
+    return
+  } else {
+    let pro = new Profile({
       user: user,
       exp: 0,
       level: 0,
       totalExp: 0
     })
-    profile.save()
+    pro.save()
     console.log(`Created a profile for ${kleur.green(user)}.`)
-    return profile
   }
 }
 
