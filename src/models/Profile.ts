@@ -7,8 +7,7 @@ const ProfileSchema: Schema = new Schema({
     },
     exp: Number,
     level: Number,
-    totalExp: Number,
-    rankCardColor: String
+    totalExp: Number
 })
 
 export default mongoose.model('profiles', ProfileSchema)

@@ -21,6 +21,7 @@ const expCooldowns = new Collection()
 
 client.on(Events.MessageCreate, async message => {
   if (message.author.bot) return
+  if (!message.inGuild) return
   if (message.webhookId) return
   await checkProfile(message.author.id, client)
   const profile = await Profile.findOne({
