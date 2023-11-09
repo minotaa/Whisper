@@ -28,46 +28,50 @@ client.on(Events.MessageCreate, async message => {
   }).exec()
   if (!expCooldowns.has(message.author.id)) {
     const exp = getRandomInt(5, 15)
-    profile.exp += exp
-    profile.totalExp += exp
-    profile.save()
+    if (profile) {
+      profile.exp += exp
+      profile.totalExp += exp
+      profile.save()
+    }
 
     expCooldowns.set(message.author.id, new Collection())
     setTimeout(() => {
       expCooldowns.delete(message.author.id)
     }, 30000)
   }
-  if (profile.exp >= (100 * Math.pow(1.5, (profile.level + 1)))) {
-    profile.exp -= (100 * Math.pow(1.5, (profile.level + 1)))
-    profile.level++
-    message.channel.send(`Congratulations <@!${message.author.id}>! You've leveled up to **Level ${profile.level}**! :D\nHeadpats for you <:pi_headpats:1106417340977004664> <:pi_headpats:1106417340977004664> <:pi_headpats:1106417340977004664>`)
-  }
-  if (profile.level >= 1) {
-    message.member.roles.add(roles.LEVEL_1)
-  } else if (profile.level >= 5) {
-    message.member.roles.add(roles.LEVEL_5)
-  } else if (profile.level >= 10) {
-    message.member.roles.add(roles.LEVEL_10)
-  } else if (profile.level >= 20) {
-    message.member.roles.add(roles.LEVEL_20)
-  } else if (profile.level >= 25) {
-    message.member.roles.add(roles.LEVEL_25)
-  } else if (profile.level >= 35) {
-    message.member.roles.add(roles.LEVEL_35)
-  } else if (profile.level >= 45) {
-    message.member.roles.add(roles.LEVEL_45)
-  }else if (profile.level >= 50) {
-    message.member.roles.add(roles.LEVEL_50)
-  } else if (profile.level >= 65) {
-    message.member.roles.add(roles.LEVEL_65)
-  } else if (profile.level >= 70) {
-    message.member.roles.add(roles.LEVEL_70)
-  } else if (profile.level >= 75) {
-    message.member.roles.add(roles.LEVEL_75)
-  } else if (profile.level >= 90) {
-    message.member.roles.add(roles.LEVEL_90)
-  } else if (profile.level >= 100) {
-    message.member.roles.add(roles.LEVEL_100)
+  if (profile) {
+    if (profile.exp >= (100 * Math.pow(1.5, (profile.level + 1)))) {
+      profile.exp -= (100 * Math.pow(1.5, (profile.level + 1)))
+      profile.level++
+      message.channel.send(`Congratulations <@!${message.author.id}>! You've leveled up to **Level ${profile.level}**! :D\nHeadpats for you <:pi_headpats:1106417340977004664> <:pi_headpats:1106417340977004664> <:pi_headpats:1106417340977004664>`)
+    }
+    if (profile.level >= 1) {
+      message.member.roles.add(roles.LEVEL_1)
+    } else if (profile.level >= 5) {
+      message.member.roles.add(roles.LEVEL_5)
+    } else if (profile.level >= 10) {
+      message.member.roles.add(roles.LEVEL_10)
+    } else if (profile.level >= 20) {
+      message.member.roles.add(roles.LEVEL_20)
+    } else if (profile.level >= 25) {
+      message.member.roles.add(roles.LEVEL_25)
+    } else if (profile.level >= 35) {
+      message.member.roles.add(roles.LEVEL_35)
+    } else if (profile.level >= 45) {
+      message.member.roles.add(roles.LEVEL_45)
+    }else if (profile.level >= 50) {
+      message.member.roles.add(roles.LEVEL_50)
+    } else if (profile.level >= 65) {
+      message.member.roles.add(roles.LEVEL_65)
+    } else if (profile.level >= 70) {
+      message.member.roles.add(roles.LEVEL_70)
+    } else if (profile.level >= 75) {
+      message.member.roles.add(roles.LEVEL_75)
+    } else if (profile.level >= 90) {
+      message.member.roles.add(roles.LEVEL_90)
+    } else if (profile.level >= 100) {
+      message.member.roles.add(roles.LEVEL_100)
+    }
   }
 })
 
